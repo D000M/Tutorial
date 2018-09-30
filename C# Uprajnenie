@@ -1,0 +1,125 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+using System.Text.RegularExpressions;
+
+namespace VSPUprajnenie
+{
+    public partial class Form1 : Form
+    {
+        
+        public Form1()
+        {
+            InitializeComponent();
+            this.MyButton.Enabled = false;
+            this.MyTextBox.Tag = false;
+            this.tbAge.Tag = false;
+
+            this.MyTextBox.Validating += new CancelEventHandler(isValid);
+            this.tbAge.Validating += new CancelEventHandler(isValid);
+        }
+
+        private void enableButton()
+        {
+            MyButton.Enabled = (bool)MyTextBox.Tag && (bool)tbAge.Tag;
+        }
+
+        private void isValid(object sender, CancelEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            if(tb.Text.Length == 0)
+            {
+                tb.BackColor = Color.Red;
+                tb.Tag = false;
+            }
+            else
+            {
+                tb.BackColor = System.Drawing.SystemColors.Window;
+                tb.Tag = true;
+            }
+            enableButton();
+        } 
+
+        
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void MyButton_Click(object sender, EventArgs e)
+        {
+            string n = MyTextBox.Text;
+            string age = tbAge.Text;
+            n += "Age: " + age + "\n";
+            richTextBox1.Text += n;
+            int myInt = 10;
+            MessageBox.Show("Message: " + myInt.ToString());
+        }
+
+        private void tbAgeKeyUp(object sender, KeyEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            if(tb.Text.Length > 0)
+            {
+                if(Int16.Parse(tb.Text) < 18)
+                {
+                    tb.BackColor = Color.Red;
+                    tb.Tag = false;
+                }
+                else
+                {
+                    tb.BackColor = SystemColors.Window;
+                    tb.Tag = true;
+                }
+            }
+            enableButton();
+        }
+
+        private void tbAgeKeyPress(object sender, KeyPressEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            if(((tb.Text.Length == 0) && (e.KeyChar == 48)) || ((e.KeyChar < 48 || e.KeyChar > 57) && e.KeyChar != 8))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void textChanged(object sender, EventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            Regex reg = new Regex("^[A-B]{1}[a-z]{1,9}$");
+
+            if(reg.IsMatch(tb.Text))
+            {
+                this.MyTextBox.Tag = true;
+                nameOK.ForeColor = Color.Green;
+                nameOK.Text = "Name is OK!";
+            }
+            else
+            {
+                this.MyTextBox.Tag = false;
+                nameOK.ForeColor = Color.Red;
+                nameOK.Text = "Is not ok!";
+            }
+            enableButton();
+        }
+    }
+}
